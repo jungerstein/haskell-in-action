@@ -1,7 +1,9 @@
 module CaponFilter where
   import Algebra
-  import Data.Eigen.Matrix
+  --import Data.Eigen.Matrix
   import Data.Complex
+  import Numeric.LinearAlgebra.Data
+  import Numeric.LinearAlgebra
 
   type LocStars = [[Double]]
 
@@ -10,10 +12,10 @@ module CaponFilter where
   s_vec :: [Double] -> LocStars -> [Complex Double]
   s_vec k loc = [exp(ii * ((the_dot k a_loc):+0)) | a_loc <- loc]
   filter_theory :: [Double] -> [Double] -> LocStars -> Double
-  filter_theory_step_big_R_inv :: [Double] -> LocStars -> MatrixXcd
+  filter_theory_step_big_R_inv :: [Double] -> LocStars -> MatrixC
   filter_theory_step_big_R_inv k loc = inverse_with_fric (outer_self_dagger_self s) where
     s = s_vec k loc
-  filter_theory_step_final :: MatrixXcd -> [Double] -> LocStars -> Double
+  filter_theory_step_final :: MatrixC -> [Double] -> LocStars -> Double
   filter_theory_step_final big_R_inv kappa loc = 1.0 / (chain_product_v_M_v h_dagger [big_R_inv] h) where
     h = h_vec kappa loc
     h_dagger = Prelude.map Data.Complex.conjugate h
