@@ -5,6 +5,7 @@ module Algebra where
   import Debug.Trace
 
   the_map = cmap
+  (>.<) = (Numeric.LinearAlgebra.<>)
 
   type MatrixC = Matrix C
   type MatrixR = Matrix R
@@ -17,7 +18,7 @@ module Algebra where
   friction = (flip friction_) 1e-8
   chain_product :: [MatrixC] -> MatrixC
   chain_product (car:[]) = car
-  chain_product (car:cdr) = car <> (chain_product cdr)
+  chain_product (car:cdr) = car >.< (chain_product cdr)
   chain_product_v_M_v :: [Complex Double] -> [MatrixC] -> [Complex Double] -> Double
   chain_product_v_M_v v_hor ms v_vert = the_real prod where
     prod = chain_product ([v_hor_mat] ++ ms ++[v_vert_mat]) 
@@ -32,7 +33,7 @@ module Algebra where
   inverse_with_fric :: MatrixC -> MatrixC
   inverse_with_fric = inv . friction
   outer_self_dagger_self :: [Complex Double] -> MatrixC
-  outer_self_dagger_self l = (dagger v) <> v where
+  outer_self_dagger_self l = (dagger v) >.< v where
     v :: MatrixC
     v = fromLists [l]
   the_dot :: [Double] -> [Double] -> Double
@@ -57,7 +58,7 @@ module Algebra where
     print $ the_real sample_matrix
     print "Inverse"
     print $ sample_inverse
-    print $ sample_complex <> sample_inverse
+    print $ sample_complex >.< sample_inverse
     print "Self_dagger_self"
     print $ outer_self_dagger_self [1:+2, 3:+4]
     print "Real number dot"
